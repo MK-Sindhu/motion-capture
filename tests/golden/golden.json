@@ -1,0 +1,154 @@
+{
+  "frames_per_clip": 40,
+  "veena": {
+    "identical_two_hands": {
+      "camera_clip": "woman_hands",
+      "reference_clip": "woman_hands",
+      "reference_mirrored": false,
+      "frames_running": 39,
+      "hands": {
+        "Left": {
+          "mean_error_deg": 0.0,
+          "frames_compared": 39,
+          "fingers": {
+            "Thumb": 0.0,
+            "Index": 0.0,
+            "Middle": 0.0,
+            "Ring": 0.0,
+            "Pinky": 0.0
+          }
+        },
+        "Right": {
+          "mean_error_deg": 0.0,
+          "frames_compared": 39,
+          "fingers": {
+            "Thumb": 0.0,
+            "Index": 0.0,
+            "Middle": 0.0,
+            "Ring": 0.0,
+            "Pinky": 0.0
+          }
+        }
+      },
+      "mean_error_deg": 0.0,
+      "score_pct": 100.0
+    },
+    "identical_one_hand": {
+      "camera_clip": "pointing_up",
+      "reference_clip": "pointing_up",
+      "reference_mirrored": false,
+      "frames_running": 39,
+      "hands": {
+        "Left": {
+          "mean_error_deg": 0.0,
+          "frames_compared": 39,
+          "fingers": {
+            "Thumb": 0.0,
+            "Index": 0.0,
+            "Middle": 0.0,
+            "Ring": 0.0,
+            "Pinky": 0.0
+          }
+        }
+      },
+      "mean_error_deg": 0.0,
+      "score_pct": 100.0
+    },
+    "premirrored_reference": {
+      "camera_clip": "woman_hands",
+      "reference_clip": "woman_hands_mirrored",
+      "reference_mirrored": true,
+      "frames_running": 39,
+      "hands": {
+        "Left": {
+          "mean_error_deg": 0.0,
+          "frames_compared": 39,
+          "fingers": {
+            "Thumb": 0.0,
+            "Index": 0.0,
+            "Middle": 0.0,
+            "Ring": 0.0,
+            "Pinky": 0.0
+          }
+        },
+        "Right": {
+          "mean_error_deg": 0.0,
+          "frames_compared": 39,
+          "fingers": {
+            "Thumb": 0.0,
+            "Index": 0.0,
+            "Middle": 0.0,
+            "Ring": 0.0,
+            "Pinky": 0.0
+          }
+        }
+      },
+      "mean_error_deg": 0.0,
+      "score_pct": 100.0
+    },
+    "different_pose": {
+      "camera_clip": "woman_hands",
+      "reference_clip": "pointing_up",
+      "reference_mirrored": false,
+      "frames_running": 39,
+      "hands": {
+        "Left": {
+          "mean_error_deg": 28.593208920927918,
+          "frames_compared": 39,
+          "fingers": {
+            "Thumb": 7.898294272880444,
+            "Index": 14.121216710334128,
+            "Middle": 39.69366450026986,
+            "Ring": 43.23717901167518,
+            "Pinky": 38.01569010948
+          }
+        }
+      },
+      "mean_error_deg": 28.593208920927918,
+      "score_pct": 0.0
+    }
+  },
+  "hand_check": {
+    "two_hands": {
+      "clip": "woman_hands",
+      "frames": 40,
+      "tracked": {
+        "Left": 40,
+        "Right": 40
+      },
+      "mean_bends_deg": {
+        "Left": {
+          "Thumb": 24.878766862918617,
+          "Index": 33.02708809285251,
+          "Middle": 29.242268141974726,
+          "Ring": 25.083254616516257,
+          "Pinky": 25.07280351388773
+        },
+        "Right": {
+          "Thumb": 18.379725806965542,
+          "Index": 31.880443608524992,
+          "Middle": 25.855723266664977,
+          "Ring": 24.217926188124636,
+          "Pinky": 19.876561290133065
+        }
+      }
+    },
+    "one_hand": {
+      "clip": "pointing_up",
+      "frames": 40,
+      "tracked": {
+        "Left": 40,
+        "Right": 0
+      },
+      "mean_bends_deg": {
+        "Left": {
+          "Thumb": 26.57857240233967,
+          "Index": 18.871730692392692,
+          "Middle": 68.9909383965325,
+          "Ring": 68.29525096556824,
+          "Pinky": 63.219493277458454
+        }
+      }
+    }
+  }
+}

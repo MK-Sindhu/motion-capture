@@ -1,0 +1,36 @@
+# Install once with:  pre-commit install
+# Run on everything:  pre-commit run --all-files
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      # Stops reference videos (or other big files) from being committed by accident.
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+
+  # ruff and mypy run from the project's own environment (pip install -e ".[dev]"),
+  # so the hooks use exactly the versions and the installed numpy/cv2 types
+  # that CI uses.
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff (lint)
+        entry: ruff check --fix
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: ruff (format)
+        entry: ruff format
+        language: system
+        types: [python]
+      - id: mypy
+        name: mypy (types)
+        entry: mypy
+        language: system
+        types: [python]
+        pass_filenames: false
