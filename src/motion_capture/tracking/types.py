@@ -11,6 +11,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import Enum
+from typing import Protocol
 
 import numpy as np
 from numpy.typing import NDArray
@@ -62,3 +63,11 @@ class Hand:
 # What a tracker returns for one frame: {Side.LEFT: Hand, Side.RIGHT: Hand},
 # with only the hands that were found.
 HandsBySide = dict[Side, Hand]
+
+
+class HandTracking(Protocol):
+    """Anything that finds hands in a frame: HandTracker, or a fake in tests."""
+
+    def process(self, frame: NDArray[np.uint8]) -> HandsBySide:
+        """The hands in a mirrored BGR frame, keyed by side."""
+        ...
