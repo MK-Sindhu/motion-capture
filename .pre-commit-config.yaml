@@ -13,21 +13,18 @@ repos:
       - id: check-added-large-files
         args: ["--maxkb=1024"]
 
-  # ruff and mypy run from the project's own environment (pip install -e ".[dev]"),
-  # so the hooks use exactly the versions and the installed numpy/cv2 types
-  # that CI uses.
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.4
+    hooks:
+      - id: ruff-check
+        args: ["--fix"]
+      - id: ruff-format
+
+  # mypy runs from the project's own environment so it sees the installed
+  # numpy / OpenCV types: activate the venv (source venv/bin/activate)
+  # before committing.
   - repo: local
     hooks:
-      - id: ruff
-        name: ruff (lint)
-        entry: ruff check --fix
-        language: system
-        types: [python]
-      - id: ruff-format
-        name: ruff (format)
-        entry: ruff format
-        language: system
-        types: [python]
       - id: mypy
         name: mypy (types)
         entry: mypy
