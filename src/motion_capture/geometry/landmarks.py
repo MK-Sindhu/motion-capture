@@ -1,0 +1,62 @@
+"""MediaPipe's 21 hand landmark points: their numbers and how they connect.
+
+    8   12  16  20     <- fingertips
+    7   11  15  19     <- end joints
+    6   10  14  18     <- middle joints
+4   5    9  13  17     <- knuckles
+ 3
+  2        (thumb: 1-4)
+   1
+       0                <- wrist
+
+Every finger has 3 joints. A joint is a triple (a, b, c) of point numbers: the
+angle is measured AT point b, between the bone towards a and the bone towards
+c; a straight joint is 180 degrees. Example: (5, 6, 7) is the index finger's
+middle joint (point 6), between bone 6->5 (to the knuckle) and 6->7 (to the tip).
+"""
+
+from __future__ import annotations
+
+from collections.abc import Mapping
+
+NUM_HAND_LANDMARKS = 21
+
+WRIST = 0
+THUMB_IP = 3
+THUMB_TIP = 4
+INDEX_TIP = 8
+MIDDLE_TIP = 12
+
+# Order matters: reports and panels list the fingers in this order.
+FINGER_NAMES: tuple[str, ...] = ("Thumb", "Index", "Middle", "Ring", "Pinky")
+
+Joint = tuple[int, int, int]
+
+FINGER_JOINTS: Mapping[str, tuple[Joint, ...]] = {
+    "Thumb": ((0, 1, 2), (1, 2, 3), (2, 3, 4)),
+    "Index": ((0, 5, 6), (5, 6, 7), (6, 7, 8)),
+    "Middle": ((0, 9, 10), (9, 10, 11), (10, 11, 12)),
+    "Ring": ((0, 13, 14), (13, 14, 15), (14, 15, 16)),
+    "Pinky": ((0, 17, 18), (17, 18, 19), (18, 19, 20)),
+}
+
+FINGERTIPS: Mapping[str, int] = {
+    "Thumb": 4,
+    "Index": 8,
+    "Middle": 12,
+    "Ring": 16,
+    "Pinky": 20,
+}
+
+# The "bones" drawn between points; the same 21 pairs as MediaPipe's
+# HAND_CONNECTIONS (a test checks they stay identical).
+HAND_CONNECTIONS: tuple[tuple[int, int], ...] = (
+    # palm
+    (0, 1), (0, 5), (5, 9), (9, 13), (13, 17), (0, 17),
+    # thumb, index, middle, ring, pinky
+    (1, 2), (2, 3), (3, 4),
+    (5, 6), (6, 7), (7, 8),
+    (9, 10), (10, 11), (11, 12),
+    (13, 14), (14, 15), (15, 16),
+    (17, 18), (18, 19), (19, 20),
+)  # fmt: skip

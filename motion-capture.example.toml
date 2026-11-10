@@ -1,0 +1,45 @@
+# motion-capture settings
+#
+# Copy this file to `motion-capture.toml` in the folder you run the command
+# from (or pass --config path/to/file.toml) and change what you need. Every
+# value below is the default. Keys you delete keep their default, and
+# command-line flags override this file.
+#
+# Unknown keys are reported as errors, so typos don't go unnoticed.
+
+[camera]
+# 0 = first camera the OS lists, 1 = second, ... On a Mac, a nearby iPhone
+# (Continuity Camera) can take number 0; see docs/troubleshooting.md.
+index = 0
+# Width and height (pixels) to ask the webcam for. More pixels = sharper fingers.
+resolution = [1280, 720]
+
+[tracker]
+# 1 or 2 hands.
+max_num_hands = 2
+# 0 = lite model (faster), 1 = full model (more accurate).
+model_complexity = 1
+# How sure (0..1) MediaPipe must be before it reports a new hand.
+min_detection_confidence = 0.5
+# Below this confidence a tracked hand counts as lost and is searched for again.
+min_tracking_confidence = 0.5
+
+[veena]
+# Reference clip. A relative path is relative to this file's folder.
+reference = "data/references/veena_reference.mp4"
+# Average finger-joint error (degrees) that scores 0%. Below it a hand turns green.
+angle_threshold_deg = 20.0
+# Frames in a row the thumbs up must be seen before starting.
+start_gesture_frames = 3
+# Seconds to put your hand back on the veena after the thumbs up.
+countdown_sec = 3.0
+# true only if the reference clip is already a mirrored (selfie) recording.
+reference_is_mirrored = false
+# The window starts at most this wide (pixels).
+max_window_width = 1600
+
+[hand_check]
+# Past positions of each fingertip drawn as a trail.
+trail_length = 10
+# A finger bent this much (degrees) fills its bar.
+max_bend_deg = 120.0
