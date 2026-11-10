@@ -1,0 +1,20 @@
+# MediaPipe must stay at 0.10.21 or earlier: the scripts use the legacy
+# `mp.solutions` API (pose / hands / drawing_utils), which was REMOVED in
+# mediapipe 0.10.30 (and is absent from all of 1.x). Anything newer breaks them
+# with "module 'mediapipe' has no attribute 'solutions'".
+mediapipe>=0.10.14,<=0.10.21
+
+# mediapipe 0.10.x pins numpy < 2, so keep numpy on the 1.x line.
+numpy>=1.24,<2
+
+# opencv-contrib-python (not opencv-python) provides the `cv2` module here:
+# mediapipe 0.10.x already depends on it, and installing both packages makes
+# two distributions fight over the same `cv2` namespace.
+opencv-contrib-python>=4.8,<5
+
+# scipy.spatial.distance.euclidean for DTW scoring.
+# < 1.14 keeps it ABI-compatible with the numpy 1.x pin above.
+scipy>=1.11.4,<1.14
+
+# Dynamic Time Warping used by open_house_dtw.py.
+fastdtw==0.3.4

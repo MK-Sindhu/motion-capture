@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+venv/
+.venv/
+
+# Tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.cache/
+
+# Videos are large: keep them out of git (reference clips go in data/references/)
+*.mp4
+*.avi
+*.mov
+*.MOV
+*.mkv
+data/references/*
+!data/references/.gitkeep
+
+# Personal settings (copy motion-capture.example.toml to create one)
+motion-capture.toml
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
