@@ -12,6 +12,7 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 from types import TracebackType
+from typing import Protocol
 
 import cv2
 
@@ -19,6 +20,14 @@ from motion_capture.errors import CameraError, VideoError
 from motion_capture.video.frames import Frame, as_frame
 
 log = logging.getLogger(__name__)
+
+
+class FrameSource(Protocol):
+    """Anything frames can be read from: a webcam, a video file, or a fake in tests."""
+
+    def read(self) -> Frame | None:
+        """The next frame, or None when there are no more."""
+        ...
 
 
 class VideoSource:

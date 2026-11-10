@@ -81,6 +81,9 @@ def load_settings(
         file_data = read_toml(path)
         _merge(sections, _from_file(file_data, source=str(path), base_dir=path.parent))
     if overrides:
+        # Check the flags on their own first, so a bad flag is reported as a
+        # flag (not as a problem in the config file).
+        build_settings(overrides, source="command-line flags")
         _merge(sections, {name: dict(values) for name, values in overrides.items()})
 
     return build_settings(sections, source=str(path) if path else "settings")
