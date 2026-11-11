@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+.vercel/
+*.local
+# Fetched by scripts/fetch-mediapipe-assets.mjs before every dev/build run
+public/mediapipe/
+public/models/

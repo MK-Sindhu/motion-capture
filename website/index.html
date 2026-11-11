@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Veena Finger Practice</title>
+    <meta
+      name="description"
+      content="Live veena finger tracking in your browser: match a reference video, or check that your hands are tracked well. Your camera never leaves your device."
+    />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="masthead">
+      <div class="wrap">
+        <h1>Veena finger practice</h1>
+        <p class="lede">
+          Live finger tracking: play along with a reference video, or check that your hands are
+          tracked well.
+          <span class="private">Runs on your device — no video is uploaded.</span>
+        </p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div class="tabs" role="tablist" aria-label="Mode">
+        <button type="button" role="tab" id="tab-veena" aria-controls="setup" aria-selected="true">
+          Practice with a reference
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="tab-hand-check"
+          aria-controls="setup"
+          aria-selected="false"
+        >
+          Check hand tracking
+        </button>
+      </div>
+
+      <section id="setup" class="card" role="tabpanel" aria-labelledby="tab-veena">
+        <p class="mode-intro" data-mode="veena">
+          Your webcam next to the teacher's video. Every frame, the 15 finger-joint angles of each
+          of your hands are compared with the reference (left hand = fretting, right = plucking):
+          green = close, red = far off, with the difference in degrees.
+        </p>
+        <p class="mode-intro" data-mode="hand-check" hidden>
+          Webcam only: a skeleton on each hand, a trail behind every fingertip and a bar for how
+          bent each finger is. Use it to get the camera position and lighting right.
+        </p>
+
+        <fieldset class="group" data-mode="veena">
+          <legend>Reference video</legend>
+          <label class="file">
+            <span class="file-button">Choose video…</span>
+            <input type="file" id="reference-file" accept="video/*" />
+            <span class="file-name" id="reference-name">No video chosen</span>
+          </label>
+          <label class="check">
+            <input type="checkbox" id="reference-mirrored" />
+            It's a mirrored (selfie) recording
+          </label>
+          <label class="check">
+            <input type="checkbox" id="reference-sound" />
+            Play its sound
+          </label>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend>Your hands</legend>
+          <div class="segmented" role="radiogroup" aria-label="Your hands from">
+            <label><input type="radio" name="source" value="camera" checked /> Webcam</label>
+            <label><input type="radio" name="source" value="file" /> A recorded video</label>
+          </div>
+          <label class="select" id="camera-field">
+            <span>Camera</span>
+            <select id="camera-device">
+              <option value="">Default camera</option>
+            </select>
+          </label>
+          <label class="file" id="user-file-field" hidden>
+            <span class="file-button">Choose video…</span>
+            <input type="file" id="user-file" accept="video/*" />
+            <span class="file-name" id="user-file-name">No video chosen</span>
+          </label>
+        </fieldset>
+
+        <details class="settings">
+          <summary>Settings</summary>
+          <div class="settings-grid">
+            <label data-mode="veena">
+              <span>Green below (degrees)</span>
+              <input type="number" id="opt-threshold" min="0.1" step="0.5" inputmode="decimal" />
+              <small
+                >A hand turns green when its average joint-angle difference is below this.</small
+              >
+            </label>
+            <label data-mode="veena">
+              <span>Countdown (seconds)</span>
+              <input type="number" id="opt-countdown" min="0" step="0.5" inputmode="decimal" />
+              <small>Time to put your hand back on the veena after the thumbs up.</small>
+            </label>
+            <label data-mode="veena">
+              <span>Thumbs-up frames</span>
+              <input type="number" id="opt-start-frames" min="1" step="1" inputmode="numeric" />
+              <small>Frames in a row the thumbs up must be seen to start comparing.</small>
+            </label>
+            <label data-mode="hand-check" hidden>
+              <span>Fingertip trail (frames)</span>
+              <input type="number" id="opt-trail-length" min="1" step="1" inputmode="numeric" />
+              <small>How many past positions of each fingertip to draw.</small>
+            </label>
+            <label data-mode="hand-check" hidden>
+              <span>Full bar at (degrees)</span>
+              <input type="number" id="opt-max-bend" min="1" step="5" inputmode="decimal" />
+              <small>A finger bent this much fills its bar.</small>
+            </label>
+            <label>
+              <span>Webcam resolution</span>
+              <select id="opt-resolution">
+                <option value="640x480">640 × 480</option>
+                <option value="1280x720">1280 × 720</option>
+                <option value="1920x1080">1920 × 1080</option>
+              </select>
+              <small>More pixels = sharper fingers, but slower.</small>
+            </label>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button type="button" class="primary" id="start">Start</button>
+          <button type="button" id="begin" hidden>Start comparing now <kbd>Space</kbd></button>
+          <button type="button" id="stop" disabled>Stop <kbd>Esc</kbd></button>
+        </div>
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="stage" aria-label="Live video">
+        <canvas id="view" hidden></canvas>
+        <div class="placeholder" id="placeholder">
+          <ol data-mode="veena">
+            <li>Choose the teacher's video, press <strong>Start</strong> and allow the camera.</li>
+            <li>
+              Show a <strong>thumbs up</strong> (or press <kbd>Space</kbd>) to start comparing.
+            </li>
+            <li>Put your hands on the veena during the countdown, and play along.</li>
+            <li>Press <kbd>Esc</kbd> (or <strong>Stop</strong>) when you're done.</li>
+          </ol>
+          <ol data-mode="hand-check" hidden>
+            <li>Press <strong>Start</strong> and allow the camera.</li>
+            <li>Wiggle each finger and check that its bar follows.</li>
+            <li>
+              Sit with the veena and move the camera until both hands stay tracked (the percentages
+              at the bottom, aim for more than 80%).
+            </li>
+            <li>Press <kbd>Esc</kbd> (or <strong>Stop</strong>) when you're done.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="about">
+        <h2>What the colours mean</h2>
+        <p>
+          While comparing, each of your hands is drawn <strong class="good">green</strong> when the
+          average difference between your 15 finger-joint angles and the reference's is below the
+          threshold (20° by default), and <strong class="bad">red</strong> when it is above. The
+          number next to the hand is that difference, in degrees, for the current frame.
+        </p>
+        <p>
+          Only hand shape is compared, not where your hand is on the neck. The 3D points are
+          MediaPipe's estimates from one camera; fingers hidden behind the strings are guessed.
+        </p>
+      </section>
+    </main>
+
+    <footer class="wrap footer">
+      <p>
+        Hand tracking by
+        <a href="https://ai.google.dev/edge/mediapipe" rel="noopener">MediaPipe</a>, running in this
+        browser tab. Your camera and videos are never uploaded.
+      </p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

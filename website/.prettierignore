@@ -1,0 +1,7 @@
+dist/
+coverage/
+public/mediapipe/
+public/models/
+package-lock.json
+# Written by the Python package (python -m tests.parity_cases); don't reformat.
+tests/fixtures/
