@@ -160,16 +160,22 @@
       </section>
 
       <section class="about">
-        <h2>What the colours mean</h2>
-        <p>
+        <h2>What you see</h2>
+        <p data-mode="veena">
           While comparing, each of your hands is drawn <strong class="good">green</strong> when the
           average difference between your 15 finger-joint angles and the reference's is below the
           threshold (20° by default), and <strong class="bad">red</strong> when it is above. The
           number next to the hand is that difference, in degrees, for the current frame.
         </p>
+        <p data-mode="hand-check" hidden>
+          Your left hand is drawn <strong class="left">blue</strong> and your right hand
+          <strong class="right">orange</strong>. Each bar shows how bent a finger is (0 = straight),
+          and the bottom line shows the frames per second and how often each hand has been found so
+          far. A hand that is lost shows NOT DETECTED.
+        </p>
         <p>
-          Only hand shape is compared, not where your hand is on the neck. The 3D points are
-          MediaPipe's estimates from one camera; fingers hidden behind the strings are guessed.
+          The 3D points are MediaPipe's estimates from one camera; fingers hidden behind the strings
+          are guessed. Only hand shape is measured, not where your hand is on the neck.
         </p>
       </section>
     </main>

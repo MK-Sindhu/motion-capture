@@ -6,3 +6,7 @@ coverage/
 # Fetched by scripts/fetch-mediapipe-assets.mjs before every dev/build run
 public/mediapipe/
 public/models/
+# Browser-test videos (python -m tests.web_e2e_media website/e2e/media) and results
+e2e/media/
+test-results/
+playwright-report/

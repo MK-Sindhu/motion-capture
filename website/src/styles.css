@@ -95,10 +95,11 @@ h1 {
   gap: 4px;
   margin-top: 16px;
   border-bottom: 1px solid var(--border);
-  overflow-x: auto;
 }
 
+/* On a narrow screen the labels wrap onto two lines instead of being cut off. */
 .tabs button {
+  flex: 0 1 auto;
   appearance: none;
   border: 0;
   border-bottom: 3px solid transparent;
@@ -106,7 +107,7 @@ h1 {
   background: none;
   padding: 10px 14px;
   color: var(--muted);
-  white-space: nowrap;
+  text-align: center;
 }
 
 .tabs button[aria-selected="true"] {
@@ -342,6 +343,15 @@ kbd {
 
 .good {
   color: var(--good);
+}
+
+/* The hand-check skeleton colours (rendering/colors.ts) */
+.left {
+  color: rgb(0 140 230);
+}
+
+.right {
+  color: rgb(214 160 0);
 }
 
 .bad {
