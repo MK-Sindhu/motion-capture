@@ -10,8 +10,8 @@ jobs:
     name: Lint and type-check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -27,12 +27,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        # Ubuntu is pinned to 24.04: ubuntu-latest (26.04) has no Python 3.9.
+        os: [ubuntu-24.04, macos-latest]
         # Oldest and newest Python versions mediapipe 0.10.21 supports.
         python: ["3.9", "3.12"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python }}
           cache: pip
@@ -43,9 +44,69 @@ jobs:
         run: pip install -e ".[dev]"
       # The integration tests download two MediaPipe sample images once and
       # build their test clips from them; keep them between runs.
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: .cache/test-assets
           key: test-assets-${{ runner.os }}-${{ hashFiles('tests/assets.py') }}
       - name: Run tests
         run: pytest --cov --cov-report=term-missing
+
+  website:
+    name: Website (lint, types, tests, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: website
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      # Includes the parity tests: the website must reproduce the outputs the
+      # Python package saved in tests/fixtures/parity-cases.json.
+      - run: npm test
+      - run: npm run build
+
+  website-browser:
+    name: Website in a browser (Chromium, fake webcam)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - uses: actions/cache@v6
+        with:
+          path: .cache/test-assets
+          key: test-assets-${{ runner.os }}-${{ hashFiles('tests/assets.py') }}
+      - name: Make the test videos (fake webcam + reference file)
+        run: |
+          pip install numpy opencv-contrib-python-headless
+          python -m tests.web_e2e_media website/e2e/media
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+      - name: Install
+        working-directory: website
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Build and test in the browser
+        working-directory: website
+        run: |
+          npm run build
+          npm run test:e2e
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: browser-test-results
+          path: website/test-results/
+          retention-days: 7
