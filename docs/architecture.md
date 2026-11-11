@@ -74,7 +74,7 @@ which is why the restructured code reproduces its numbers exactly:
 |---|---|
 | A default value | `config/settings.py` **and** `motion-capture.example.toml` (a test keeps them in sync) |
 | A new setting | Add a field to the right dataclass in `config/settings.py`, then add it to the example TOML. Add a flag in `cli/main.py` (`build_parser` + `overrides_from_args`) if it should have one |
-| How a hand is scored | `scoring/compare.py`, then regenerate `tests/golden/golden.json` and say why in the commit |
+| How a hand is scored | `scoring/compare.py`, then regenerate `tests/golden/golden.json` and say why in the commit. Make the same change in `website/src/scoring/compare.ts` and regenerate the parity cases (see below) |
 | The final summary | `scoring/report.py` (`format_text`; `to_dict` is used by the golden tests) |
 | On-screen text or layout | `rendering/panels.py` |
 | The start gesture | `gestures/thumbs_up.py` |
@@ -92,3 +92,28 @@ which is why the restructured code reproduces its numbers exactly:
   is around 1e-14°).
 - Marker: `pytest -m "not integration"` skips the slower ones. If the sample
   images can't be downloaded, the integration tests are skipped, not failed.
+
+## The website
+
+`website/` is the browser version: the same programs in TypeScript, in the
+same folder layout, with MediaPipe running in the browser. Its README covers
+running and deploying it. The two versions are kept identical by shared test
+cases:
+
+1. `tests/parity_cases.py` builds fixed inputs: synthetic hands, and scripted
+   sessions with thumbs-ups, countdowns, Space/Esc and lost hands. It runs them
+   through the Python code, using fake cameras and trackers like the
+   integration tests, and saves inputs and outputs to
+   `website/tests/fixtures/parity-cases.json`.
+2. `website/tests/parity.test.ts` runs the same inputs through the TypeScript
+   code and must get the same numbers (within 1e-9) and the same text.
+3. `tests/unit/test_parity_cases.py` re-runs the Python side on the saved
+   inputs, so the file can't go stale.
+
+So a change to the logic in one language fails CI until the other matches and
+the file is regenerated (`python -m tests.parity_cases`).
+
+The tracker is the one part that can't be shared. The browser's MediaPipe is a
+newer model than the Python package's `mp.solutions`, and its 3D estimates
+differ by a few degrees. It also labels left and right the other way round,
+which `website/src/tracking/detections.ts` swaps back.

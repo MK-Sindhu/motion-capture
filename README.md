@@ -12,6 +12,11 @@ Webcam finger-movement matching for veena practice, built on
   then scores the match overall, per hand (left = fretting, right = plucking)
   and per finger.
 
+The same two programs also run in the browser: [`website/`](website/) is a
+static site, ready for Vercel, with the same logic (checked by shared tests)
+and MediaPipe running on the visitor's device. See
+[website/README.md](website/README.md).
+
 The original full-body sports script is kept, unchanged, in
 [`legacy/`](#legacy-full-body-script).
 
@@ -135,6 +140,7 @@ src/motion_capture/
   session/    waiting -> countdown -> running
   rendering/  drawing, panels, the window
 tests/        unit/ (fast, no camera) and integration/ (runs MediaPipe on sample clips)
+website/      the browser version (TypeScript, same folder layout as src/motion_capture/)
 docs/         architecture.md, troubleshooting.md
 legacy/       the original full-body script
 ```
@@ -161,8 +167,16 @@ check that the programs still produce the numbers in
 from the original scripts before the restructure. If you change how scoring
 works on purpose, regenerate that file and explain why in the commit.
 
+**Keeping the website in step:** the website re-implements the logic in
+TypeScript. `python -m tests.parity_cases` writes shared test cases (inputs
+plus the Python outputs) to `website/tests/fixtures/parity-cases.json`, and
+the website's tests must reproduce them. If you change the logic on purpose,
+regenerate the file and update the website to match.
+`tests/unit/test_parity_cases.py` fails if the file is out of date.
+
 CI (GitHub Actions, [`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs
-the same checks on Ubuntu and macOS with Python 3.9 and 3.12.
+these checks on Ubuntu and macOS with Python 3.9 and 3.12. It also checks,
+tests and builds the website, and runs it in Chromium with a fake webcam.
 
 ## Known limitations
 
