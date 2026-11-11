@@ -38,15 +38,21 @@ native code). If it fails, see [docs/troubleshooting.md](docs/troubleshooting.md
 
 ## Quick start
 
-1. **Check tracking:** run `motion-capture hand-check`. Wiggle each finger and
-   check that its bar follows. Then sit with the veena and adjust the camera
-   until both hands show as tracked in more than 80% of frames.
+1. **Check tracking:** run `./check_hands.sh` (the same as
+   `motion-capture hand-check`). Wiggle each finger and check that its bar
+   follows. Then sit with the veena and adjust the camera until both hands
+   show as tracked in more than 80% of frames.
 2. **Add a reference clip:** put a video of the teacher playing in
    `data/references/` (videos are not committed to git).
-3. **Play along:** run
-   `motion-capture veena --reference data/references/teacher.mp4`.
+3. **Play along:** run `./start.sh data/references/teacher.mp4` (the same as
+   `motion-capture veena --reference data/references/teacher.mp4`). If you
+   name the clip `veena_reference.mp4`, plain `./start.sh` finds it.
    Show a thumbs up (or press SPACE), put your hand back on the veena during
    the 3-second countdown, play, then press ESC to see your score.
+
+The two scripts work from any folder and don't need the venv activated. Any
+extra options are passed on, e.g. `./check_hands.sh --camera 1` or
+`./start.sh teacher.mp4 --threshold 25`.
 
 ## Commands
 
