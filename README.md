@@ -76,7 +76,9 @@ Both commands accept:
 | `--countdown SEC` | Seconds between the start gesture and scoring (default 3) |
 | `--start-frames N` | Frames in a row the thumbs up must be seen (default 3) |
 | `--reference-mirrored` | The reference is already a mirrored (selfie) recording |
-| `--output PATH` | Also save the report as JSON |
+
+The score is printed in the terminal and shown on the final screen. It isn't
+saved to a file.
 
 Examples:
 
@@ -85,7 +87,7 @@ motion-capture hand-check --camera 1
 motion-capture hand-check --video data/references/teacher.mp4     # does the reference track well?
 motion-capture veena --reference data/references/teacher.mp4 --threshold 25
 motion-capture veena --reference data/references/teacher.mp4 \
-    --video my-practice.mp4 --output report.json                  # score a recording
+    --video my-practice.mp4                                       # score a recording
 python -m motion_capture veena ...                                # same as motion-capture
 ```
 

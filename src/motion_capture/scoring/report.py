@@ -47,7 +47,8 @@ class Report:
     worst_finger: str
 
     def to_dict(self) -> dict[str, Any]:
-        """A JSON-friendly version (for --output report.json)."""
+        """The report as plain dicts and numbers (the tests compare this with
+        tests/golden/golden.json). Nothing is written to disk."""
         return {
             "frames_running": self.frames_running,
             "threshold_deg": self.threshold_deg,

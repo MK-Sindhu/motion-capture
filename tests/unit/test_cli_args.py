@@ -42,6 +42,14 @@ def test_bad_usage_exits_with_status_2(argv):
     assert exc.value.code == 2
 
 
+def test_veena_has_no_option_to_save_the_score(capsys):
+    # Scores are only printed and shown, not saved (there's no --output yet).
+    with pytest.raises(SystemExit) as exc:
+        cli.main(["veena", "--output", "report.json"])
+    assert exc.value.code == 2
+    assert "unrecognized arguments: --output" in capsys.readouterr().err
+
+
 def test_only_given_flags_become_overrides():
     assert cli.overrides_from_args(parse("veena")) == {}
     args = parse(

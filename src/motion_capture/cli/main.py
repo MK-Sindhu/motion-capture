@@ -2,7 +2,9 @@
 
     motion-capture hand-check [--camera N | --video PATH] [--trail-length N]
     motion-capture veena --reference PATH [--camera N | --video PATH]
-                         [--threshold DEG] [--countdown SEC] [--output report.json]
+                         [--threshold DEG] [--countdown SEC]
+
+The score is printed at the end and shown on screen; it isn't saved anywhere.
 
 Settings come from the defaults, then motion-capture.toml (or --config), then
 these flags. Exit status: 0 = success, 1 = an error such as a missing file or
@@ -13,7 +15,6 @@ camera (printed as "error: ..."), 2 = invalid command-line usage,
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 import os
 import sys
@@ -175,9 +176,6 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="the reference clip is already a mirrored (selfie) recording",
     )
-    veena.add_argument(
-        "--output", type=Path, metavar="PATH", help="also save the report as JSON"
-    )
     return parser
 
 
@@ -274,32 +272,8 @@ def _run_veena(
         reference_tracker = stack.enter_context(HandTracker(settings.tracker))
         window = make_window(WINDOW_TITLE, config.max_window_width)
         stack.callback(window.close)
-        report = run_veena_match(
+        # Prints the score and shows the final screen. The score is not saved.
+        run_veena_match(
             camera, reference, user_tracker, reference_tracker, window, config
         )
-
-    if args.output is not None:
-        if report is None:
-            log.warning(
-                "Nothing was compared, so no report was written to %s", args.output
-            )
-        else:
-            _write_json(
-                args.output,
-                {
-                    "motion_capture_version": __version__,
-                    "reference": str(config.reference),
-                    "user_source": str(args.video)
-                    if args.video
-                    else f"webcam {settings.camera.index}",
-                    **report.to_dict(),
-                },
-            )
     return 0
-
-
-def _write_json(path: Path, data: dict[str, Any]) -> None:
-    try:
-        path.write_text(json.dumps(data, indent=2) + "\n")
-    except OSError as exc:
-        raise MotionCaptureError(f"Cannot write {path}: {exc.strerror}") from exc

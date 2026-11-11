@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import io
-import json
 
 import pytest
 
@@ -62,9 +61,8 @@ def test_run_veena_match_reproduces_golden_numbers(case, clips):
     assert window.frames_shown == golden["frames_running"] + 2
 
 
-def test_cli_veena_writes_the_json_report(clips, tmp_path, capsys):
+def test_cli_veena_prints_the_score_and_saves_nothing(clips, tmp_path, capsys):
     golden = GOLDEN["veena"]["different_pose"]
-    output = tmp_path / "report.json"
     status = main(
         [
             "veena",
@@ -74,21 +72,18 @@ def test_cli_veena_writes_the_json_report(clips, tmp_path, capsys):
             str(clips[golden["reference_clip"]]),
             "--countdown",
             "0",
-            "--output",
-            str(output),
         ],
         window_factory=lambda title, max_width: HeadlessWindow(keys={0: KEY_SPACE}),
     )
     assert status == 0
-    data = json.loads(output.read_text())
-    _check_against_golden(data, golden)
-    assert data["hands"]["Left"]["role"] == "fretting"
-    assert data["user_source"] == str(clips[golden["camera_clip"]])
-    assert "Biggest difference: Left hand" in capsys.readouterr().out
+    printed = capsys.readouterr().out
+    assert f"Match Score: {golden['score_pct']:.1f}%" in printed
+    assert "Biggest difference: Left hand" in printed
+    # The test runs inside the empty tmp_path folder: no score file appeared.
+    assert list(tmp_path.iterdir()) == []
 
 
-def test_cli_veena_without_starting_records_nothing(clips, tmp_path, capsys):
-    output = tmp_path / "report.json"
+def test_cli_veena_without_starting_records_nothing(clips, capsys):
     status = main(
         [
             "veena",
@@ -96,12 +91,9 @@ def test_cli_veena_without_starting_records_nothing(clips, tmp_path, capsys):
             str(clips["pointing_up"]),
             "--reference",
             str(clips["pointing_up"]),
-            "--output",
-            str(output),
         ],
         # No SPACE and no thumbs up in the clip: the session never starts.
         window_factory=lambda title, max_width: HeadlessWindow(),
     )
     assert status == 0
-    assert not output.exists()
     assert "No finger comparison recorded" in capsys.readouterr().out

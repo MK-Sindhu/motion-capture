@@ -75,7 +75,7 @@ which is why the restructured code reproduces its numbers exactly:
 | A default value | `config/settings.py` **and** `motion-capture.example.toml` (a test keeps them in sync) |
 | A new setting | Add a field to the right dataclass in `config/settings.py`, then add it to the example TOML. Add a flag in `cli/main.py` (`build_parser` + `overrides_from_args`) if it should have one |
 | How a hand is scored | `scoring/compare.py`, then regenerate `tests/golden/golden.json` and say why in the commit |
-| The final summary / JSON report | `scoring/report.py` (`format_text`, `to_dict`) |
+| The final summary | `scoring/report.py` (`format_text`; `to_dict` is used by the golden tests) |
 | On-screen text or layout | `rendering/panels.py` |
 | The start gesture | `gestures/thumbs_up.py` |
 | The hand tracker | `tracking/hands.py` (keep returning `Detection` / `HandsBySide`) |
